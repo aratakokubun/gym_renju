@@ -9,7 +9,8 @@ Test module for renju utils.
 # Imports
 import unittest as ut
 from gym_renju.envs.utils import utils
-from gym_renju.envs.player import PlayerColor, PlayerType
+from gym_renju.envs.player import PlayerColor, PlayerType, PlayerLatest
+from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
 
 class UtilsTest(ut.TestCase):
   def test_next_player_white_is_black(self):
@@ -47,3 +48,11 @@ class UtilsTest(ut.TestCase):
     self.assertEqual(expected_line_col, actual_lines[1])
     self.assertEqual(expected_line_rb, actual_lines[2])
     self.assertEqual(expected_line_lb, actual_lines[3])
+
+  def test_mark_latest(self):
+    size = 15
+    latest_action = 60
+    board = bsg.generate_empty(15)
+    board[latest_action] = PlayerColor.BLACK
+    copied_board = utils.mark_latest(board, size, latest_action)
+    self.assertEqual(PlayerLatest.BLACK, copied_board[latest_action])

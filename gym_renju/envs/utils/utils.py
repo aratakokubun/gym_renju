@@ -8,7 +8,8 @@ Utility module for renju envs.
 
 # Imports
 from typing import List, Tuple
-from gym_renju.envs.player import PlayerColor
+import copy
+from gym_renju.envs.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils.invalid_type_exception import InvalidPlayerColorException as IpcException
 
 def next_player(current_player: PlayerColor) -> PlayerColor:
@@ -41,3 +42,18 @@ def get_target_lines(board_state: List[int], board_size: int, latest_action: int
     board_state[right_below_start::board_size+1],
     board_state[left_below_start::board_size-1]
   ]
+
+def color_to_latest(player_color: PlayerColor) -> PlayerLatest:
+  if player_color is PlayerColor.BLACK:
+    return PlayerLatest.BLACK
+  elif player_color is PlayerColor.WHITE:
+    return PlayerLatest.WHITE
+  else:
+    raise IpcException(player_color)
+
+def mark_latest(board_state: List[int], board_size: int, latest_action: int) -> List[int]:
+  current_color = board_state[latest_action]
+  latest_color = color_to_latest(current_color)
+  copied_board = copy.deepcopy(board_state)
+  copied_board[latest_action] = latest_color
+  return copied_board

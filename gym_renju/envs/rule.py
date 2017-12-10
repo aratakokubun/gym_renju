@@ -17,6 +17,7 @@ import sys
 import six
 from typing import List, Tuple, Dict
 import operator
+import copy
 
 from gym_renju.envs.renju import RenjuBoard
 from gym_renju.envs.player import PlayerColor, PlayerLatest
@@ -45,16 +46,25 @@ def search_sequence(board_state: List[int], start: int, search_dir: Tuple, size:
       break
   return (count, color)
 
+def win_game(board_state: List[int], board_size: int, current_player: PlayerColor, latest_action: int, patterns: Dict) -> bool:
+  lines = utils.get_target_lines(board_state, board_size, latest_action)
+  goren_pattern = patterns[rpc.SpecialPatterns.GO_REN]
+  matched = map(lambda line: len(goren_pattern.findall(''.join(line))), lines)
+  return sum(matched) > 0
 
-def win_game(board_state: List[int], current_player: PlayerColor, patterns: Dict) -> bool:
-  pass
+def lose_game(board_state: List[int], board_size: int, current_player: PlayerColor, latest_action: int, patterns: Dict) -> bool:
+  lines = utils.get_target_lines(board_state, board_size, latest_action)
+  # Judge tyoren
+  # TODO
+  # Judge yonyon
+  marked_board = utils.mark_latest(board_state, board_size, latest_action)
+  # TODO
+  # Judge san and yon to sansan yonyon
+  # TODO
 
-def lose_game(board_state: List[int], current_player: PlayerColor, patterns: Dict, latest_action: int) -> bool:
-  pass
-
-def judge_game(board_state: List[int], current_player: PlayerColor, latest_action: int) -> any:
+def judge_game(board_state: List[int], board_size: int, current_player: PlayerColor, latest_action: int) -> any:
   patterns = rpc.pcompile(current_player, latest_action)
-  is_win = win_game(board_state, current_player, patterns)
+  is_win = win_game(board_state, board_size, current_player, latest_action, patterns)
 
 def legal_actions(board_state: List[int]) -> List[int]:
   '''
