@@ -8,7 +8,6 @@ Test module for renju rule.
 
 # Imports
 import unittest as ut
-import operator
 from typing import Tuple, List
 from parameterized import parameterized
 from gym_renju.envs.player import PlayerColor
@@ -22,7 +21,7 @@ EMPTY = PlayerColor.EMPTY
 
 class RuleTest(ut.TestCase):
   @parameterized.expand([[7], [9], [15], [19]])
-  def test_legal_actions_based_on_states(self, input_size: int):
+  def test_legal_actions(self, input_size: int):
     board_state = bsg.generate_random(input_size)
     actual_actions = rule.legal_actions(board_state)
     for index, state in enumerate(board_state):
@@ -38,11 +37,17 @@ class RuleTest(ut.TestCase):
     [9, (0, 1), 9, [WHITE, WHITE, WHITE, EMPTY, BLACK, WHITE], (3, WHITE)],
     [15, (1, 1), 35, [BLACK, WHITE, WHITE, EMPTY], (1, BLACK)],
     [19, (1, -1), 3, [WHITE, WHITE, WHITE, WHITE], (4, WHITE)]])
-  def test_search_sequence(self, size: int, dir: Tuple, start: int, colors: List, expected: Tuple):
+  def test_search_sequence(self, size: int, direc: Tuple, start: int,
+    colors: List, expected: Tuple):
     board_state = bsg.generate_empty(size)
     index = start
     for color in colors:
       board_state[index] = color
-      index = index + dir[0] * size + dir[1]
-    actual = rule.search_sequence(board_state, start, dir, size)
+      index = index + direc[0] * size + direc[1]
+    actual = rule.search_sequence(board_state, start, direc, size)
     self.assertEqual(actual, expected)
+
+  def test_match_pattern_count(self):
+    lines = ['01110', '01101', '1110111', '00121']
+    pattern = '111'
+    self.assertEqual(2, rule.match_pattern_count(lines, pattern))
