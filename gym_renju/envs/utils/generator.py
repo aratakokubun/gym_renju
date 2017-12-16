@@ -8,7 +8,7 @@ Utility module for generating game states.
 
 # Imports
 from typing import List
-from gym_renju.envs.player import PlayerColor
+from gym_renju.envs.domain.player import PlayerColor
 import random
 
 class BoardStateGenerator(object):

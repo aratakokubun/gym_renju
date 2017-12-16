@@ -9,7 +9,7 @@ Test module for renju utils.
 # Imports
 import unittest as ut
 from gym_renju.envs.utils import utils
-from gym_renju.envs.player import PlayerColor, PlayerType, PlayerLatest
+from gym_renju.envs.domain.player import PlayerColor, PlayerType, PlayerLatest
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
 
 class UtilsTest(ut.TestCase):
@@ -41,8 +41,8 @@ class UtilsTest(ut.TestCase):
     board = [i for i in range(size**2)]
     expected_line_row = [i for i in range(45, 60)]
     expected_line_col = [i for i in range(5, 15**2, 15)]
-    expected_line_rb = [i for i in range(2, 15**2, 16)]
-    expected_line_lb = [i for i in range(8, 15**2, 14)]
+    expected_line_rb = [i for i in range(2, 15*13, 16)]
+    expected_line_lb = [i for i in range(8, 15*9, 14)]
     actual_lines = utils.get_target_lines(board, size, latest_action)
     self.assertEqual(expected_line_row, actual_lines[0])
     self.assertEqual(expected_line_col, actual_lines[1])
@@ -50,9 +50,8 @@ class UtilsTest(ut.TestCase):
     self.assertEqual(expected_line_lb, actual_lines[3])
 
   def test_mark_latest(self):
-    size = 15
     latest_action = 60
     board = bsg.generate_empty(15)
-    board[latest_action] = PlayerColor.BLACK
-    copied_board = utils.mark_latest(board, size, latest_action)
-    self.assertEqual(PlayerLatest.BLACK, copied_board[latest_action])
+    board[latest_action] = PlayerColor.BLACK.value
+    copied_board = utils.mark_latest(board, latest_action)
+    self.assertEqual(PlayerLatest.BLACK.value, copied_board[latest_action])

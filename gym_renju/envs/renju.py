@@ -17,7 +17,7 @@ import six
 from typing import List
 import copy
 
-from gym_renju.envs.player import PlayerColor, PlayerType
+from gym_renju.envs.domain.player import PlayerColor, PlayerType
 from gym_renju.envs import rule
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg

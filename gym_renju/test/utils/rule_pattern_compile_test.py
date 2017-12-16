@@ -10,22 +10,23 @@ Test module for rule pattern compiler.
 import unittest as ut
 import re
 from parameterized import parameterized
-from gym_renju.envs.player import PlayerColor, PlayerLatest
+from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils import rule_pattern_compile as rpc
 
 class RulePatternCompilerTest(ut.TestCase):
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
-    [PlayerColor.BLACK, '0111112', 1],
-    [PlayerColor.WHITE, '122222', 1],
-    [PlayerColor.BLACK, '111110', 1],
-    [PlayerColor.WHITE, '22222', 1],
-    [PlayerColor.BLACK, '11111011111', 2],
-    [PlayerColor.BLACK, '1111112', 0],
-    [PlayerColor.BLACK, '1111', 0],
-    [PlayerColor.BLACK, '2112110', 0]])
-  def test_go_ren(self, player_color: PlayerColor, pattern: str, match_nums: int):
-    re_pattern = rpc.compile_go_ren(player_color)
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '0111112', 1],
+    [PlayerColor.WHITE, PlayerLatest.WHITE, '122222', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '111110', 1],
+    [PlayerColor.WHITE, PlayerLatest.WHITE, '22222', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '11111011111', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '1111112', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '1111', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '2112110', 0]])
+  def test_go_ren(self, player_color: PlayerColor, player_latest: PlayerLatest,
+    pattern: str, match_nums: int):
+    re_pattern = rpc.compile_go_ren(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
     self.assertEqual(len(matched), match_nums)
 
@@ -43,16 +44,17 @@ class RulePatternCompilerTest(ut.TestCase):
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
-    [PlayerColor.BLACK, '00111102', 1],
-    [PlayerColor.BLACK, '011110', 1],
-    [PlayerColor.BLACK, '011110011110', 2],
-    [PlayerColor.BLACK, '00111120', 0],
-    [PlayerColor.BLACK, '02111100', 0],
-    [PlayerColor.BLACK, '001111100', 0],
-    [PlayerColor.BLACK, '10111110', 0],
-    [PlayerColor.BLACK, '00110100', 0]])
-  def test_tasshi(self, player_color: PlayerColor, pattern: str, match_nums: int):
-    re_pattern = rpc.compile_tasshi(player_color)
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '00111102', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '011110', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '011110011110', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '00111120', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '02111100', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '001111100', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '10111110', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '00110100', 0]])
+  def test_tasshi(self, player_color: PlayerColor, player_latest: PlayerLatest,
+    pattern: str, match_nums: int):
+    re_pattern = rpc.compile_tasshi(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
     self.assertEqual(len(matched), match_nums)
 

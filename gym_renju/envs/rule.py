@@ -10,9 +10,10 @@ from typing import List, Tuple
 import operator
 import re
 
-from gym_renju.envs.player import PlayerColor, PlayerLatest
+from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils import rule_pattern_compile as rpc
+from gym_renju.envs.utils.rule_pattern_compile import RulePattern
 
 def search_sequence(board_state: List[int], start: int, search_dir: Tuple, size: int) -> List:
   '''
@@ -49,40 +50,52 @@ def match_pattern_count(lines: List[int], pattern: str) -> bool:
       count += 1
   return count
 
-def win_game(board_state: List[int], board_size: int,
-  current_player: PlayerColor, latest_action: int) -> bool:
-  lines = utils.get_target_lines(board_state, board_size, latest_action)
-  return match_pattern(lines, rpc.compile_go_ren(current_player))
+def win_game(board_state: List[int], board_size: int, current_player: PlayerColor,
+  latest_player: PlayerLatest, latest_action: int) -> bool:
+  marked_board = utils.mark_latest(board_state, latest_action)
+  marked_lines = utils.get_target_lines(marked_board, board_size, latest_action)
+  return match_pattern(marked_lines, rpc.compile_go_ren(current_player, latest_player))
 
 def inline_violation(lines: List[int], current_player: PlayerColor,
-  latest_player: PlayerLatest) -> bool:
-  violation_patterns = [
-    rpc.compile_tyo_ren(current_player, latest_player),
-    rpc.compile_yonyon_ryoto(current_player, latest_player),
-    rpc.compile_yonyon_tyoda(current_player, latest_player),
-    rpc.compile_yonyon_soryu(current_player, latest_player)
-  ]
-  return any(lambda p: match_pattern(lines, p), violation_patterns)
+  latest_player: PlayerLatest) -> RulePattern:
+  violation_patterns = {
+    RulePattern.TYO_REN: rpc.compile_tyo_ren(current_player, latest_player),
+    RulePattern.YONYON_RYOTO: rpc.compile_yonyon_ryoto(current_player, latest_player),
+    RulePattern.YONYON_TYODA: rpc.compile_yonyon_tyoda(current_player, latest_player),
+    RulePattern.YONYON_SORYU: rpc.compile_yonyon_soryu(current_player, latest_player)
+  }
+  for pattern, regix in violation_patterns.items():
+    if match_pattern(lines, regix):
+      return pattern
+  return RulePattern.NONE
 
 def multi_line_violation(lines: List[int], current_player: PlayerColor,
-  latest_player: PlayerLatest) -> bool:
-  violation_patterns = [
-    rpc.compile_san(current_player, latest_player),
-    rpc.compile_yon(current_player, latest_player)
-  ]
-  return any(lambda p: match_pattern_count(lines, p) > 1, violation_patterns)
+  latest_player: PlayerLatest) -> RulePattern:
+  violation_patterns = {
+    RulePattern.SANSAN: rpc.compile_san(current_player, latest_player),
+    RulePattern.YONYON: rpc.compile_yon(current_player, latest_player)
+  }
+  for pattern, regix in violation_patterns.items():
+    if match_pattern_count(lines, regix) > 1:
+      return pattern
+  return RulePattern.NONE
 
 def lose_game(board_state: List[int], board_size: int, current_player: PlayerColor,
   latest_player: PlayerLatest, latest_action: int) -> bool:
-  marked_board = utils.mark_latest(board_state, board_size, latest_action)
+  marked_board = utils.mark_latest(board_state, latest_action)
   marked_lines = utils.get_target_lines(marked_board, board_size, latest_action)
 
-  if inline_violation(marked_lines, current_player, latest_player):
+  inline_result = inline_violation(marked_lines, current_player, latest_player)
+  if inline_result is not RulePattern.NONE:
+    inline_result.print_result(current_player)
     return True
-  elif multi_line_violation(marked_lines, current_player, latest_player):
+
+  multi_line_result = multi_line_violation(marked_lines, current_player, latest_player)
+  if multi_line_result is not RulePattern.NONE:
+    multi_line_result.print_result(current_player)
     return True
-  else:
-    return False
+
+  return False
 
 def judge_game(board_state: List[int], board_size: int, current_player: PlayerColor,
   latest_player: PlayerLatest, latest_action: int) -> int:

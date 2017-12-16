@@ -11,7 +11,7 @@ import unittest as ut
 import pytest
 from parameterized import parameterized
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
-from gym_renju.envs.player import PlayerColor
+from gym_renju.envs.domain.player import PlayerColor
 
 # @pytest.mark.parametrize('size_input', [9,19,7])
 class BoardStateGenerator(ut.TestCase):

@@ -6,7 +6,7 @@ Invalid type exception module.
 @data: 2017/12/09
 '''
 
-from gym_renju.envs.player import PlayerColor, PlayerType
+from gym_renju.envs.domain.player import PlayerColor, PlayerType
 
 class InvalidPlayerColorException(Exception):
   def __init__(self, player_color: PlayerColor) -> None:
