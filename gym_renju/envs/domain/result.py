@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 '''
-Result enum module.
+Result domain object module.
 @auther: Arata Kokubun
 @data: 2017/12/16
 '''

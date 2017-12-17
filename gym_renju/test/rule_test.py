@@ -46,8 +46,3 @@ class RuleTest(ut.TestCase):
       index = index + direc[0] * size + direc[1]
     actual = rule.search_sequence(board_state, start, direc, size)
     self.assertEqual(actual, expected)
-
-  def test_match_pattern_count(self):
-    lines = ['01110', '01101', '1110111', '00121']
-    pattern = '111'
-    self.assertEqual(2, rule.match_pattern_count(lines, pattern))

@@ -10,18 +10,16 @@ Utility module for renju envs.
 from typing import List, Tuple
 import copy
 from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
-from gym_renju.envs.utils.invalid_type_exception import InvalidPlayerColorException as IpcException
+
+def valid_player_colors() -> List[PlayerColor]:
+  return [PlayerColor.BLACK, PlayerColor.WHITE]
 
 def next_player(current_player: PlayerColor) -> PlayerColor:
+  assert current_player in valid_player_colors()
   if current_player is PlayerColor.BLACK:
     return PlayerColor.WHITE
   elif current_player is PlayerColor.WHITE:
     return PlayerColor.BLACK
-  else:
-    raise IpcException(current_player)
-
-def valid_player_colors() -> List[PlayerColor]:
-  return [PlayerColor.BLACK, PlayerColor.WHITE]
 
 def index_to_coords(index: int, board_size: int) -> Tuple:
   return (int(index/board_size), index%board_size)
@@ -29,7 +27,8 @@ def index_to_coords(index: int, board_size: int) -> Tuple:
 def coords_to_index(coords: Tuple, board_size: int) -> int:
   return coords[0]*board_size + coords[1]
 
-def get_target_lines(board_state: List[int], board_size: int, latest_action: int) -> List[List[int]]:
+def get_target_lines(board_state: List[int], board_size: int,
+  latest_action: int) -> List[List[int]]:
   coords = index_to_coords(latest_action, board_size)
 
   rb_start = (coords[0] - min(coords[0], coords[1]), coords[1] - min(coords[0], coords[1]))
@@ -37,7 +36,8 @@ def get_target_lines(board_state: List[int], board_size: int, latest_action: int
   rb_end_index = board_size**2 if rb_start[0] > 0 else board_size * (board_size - rb_start[1])
 
   col_from_right = board_size - 1 - coords[1]
-  lb_start = (coords[0] - min(coords[0], col_from_right), coords[1] + min(coords[0], col_from_right))
+  lb_start = (coords[0] - min(coords[0], col_from_right),
+    coords[1] + min(coords[0], col_from_right))
   lb_start_index = coords_to_index(lb_start, board_size)
   lb_end_index = board_size**2 if lb_start[0] > 0 else board_size * (lb_start[1] + 1)
 
@@ -48,13 +48,13 @@ def get_target_lines(board_state: List[int], board_size: int, latest_action: int
     board_state[lb_start_index:lb_end_index:board_size-1]
   ]
 
-def color_to_latest(player_color: int) -> PlayerLatest:
-  if player_color is PlayerColor.BLACK.value:
+def color_to_latest(current_player_index: int) -> PlayerLatest:
+  current_player = PlayerColor(current_player_index)
+  assert current_player in valid_player_colors()
+  if current_player is PlayerColor.BLACK:
     return PlayerLatest.BLACK
-  elif player_color is PlayerColor.WHITE.value:
+  elif current_player is PlayerColor.WHITE:
     return PlayerLatest.WHITE
-  else:
-    raise IpcException(player_color)
 
 def mark_latest(board_state: List[int], latest_action: int) -> List[int]:
   current_color = board_state[latest_action]

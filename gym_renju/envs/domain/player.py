@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 '''
-Player enum module.
+Player domain object module.
 @auther: Arata Kokubun
 @data: 2017/12/09
 '''

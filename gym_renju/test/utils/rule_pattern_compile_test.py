@@ -19,20 +19,41 @@ class RulePatternCompilerTest(ut.TestCase):
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0111112', 1],
     [PlayerColor.WHITE, PlayerLatest.WHITE, '122222', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '111110', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '111310', 1],
     [PlayerColor.WHITE, PlayerLatest.WHITE, '22222', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '11111011111', 2],
-    [PlayerColor.BLACK, PlayerLatest.BLACK, '1111112', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '3111110', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '011111120', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '1111', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '2112110', 0]])
   def test_go_ren(self, player_color: PlayerColor, player_latest: PlayerLatest,
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_go_ren(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
+
+  @parameterized.expand([
+    # color, latest, pattern_name, pattern, match_nums
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '0111112', 1],
+    [PlayerColor.WHITE, PlayerLatest.WHITE, '122222', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '111110', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '111310', 1],
+    [PlayerColor.WHITE, PlayerLatest.WHITE, '22222', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '11111011111', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '3111110', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '011111120', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '1111', 0],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '2112110', 0]])
+  def test_more_go_ren(self, player_color: PlayerColor, player_latest: PlayerLatest,
+    pattern: str, match_nums: int):
+    re_pattern = rpc.compile_more_go_ren(player_color, player_latest)
+    matched = re.findall(re_pattern, pattern)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
     [PlayerColor.BLACK, PlayerLatest.BLACK, '111111', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '111311', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '11111110111111', 2],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0111112', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '111101111', 0]])
@@ -40,13 +61,16 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_tyo_ren(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
     [PlayerColor.BLACK, PlayerLatest.BLACK, '00111102', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '011110', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '013110', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '011110011110', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '011110011110', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '0111130', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '00111120', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '02111100', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '001111100', 0],
@@ -56,7 +80,7 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_tasshi(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
@@ -64,9 +88,11 @@ class RulePatternCompilerTest(ut.TestCase):
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0111012', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0110112', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0101112', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '0101312', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0011112', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '11110', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '11110010111', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '0311110', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0111110', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '01110110', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0111101', 1]])
@@ -74,7 +100,7 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_yon(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
@@ -90,7 +116,7 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_yonyon_ryoto(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
@@ -105,7 +131,7 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_yonyon_tyoda(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
@@ -120,15 +146,18 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_yonyon_soryu(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
 
   @parameterized.expand([
     # color, latest, pattern_name, pattern, match_nums
     [PlayerColor.BLACK, PlayerLatest.BLACK, '00111002', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0110102', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '2010110', 1],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '2010310', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '001110', 1],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0011102011010', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '001110011010', 2],
+    [PlayerColor.BLACK, PlayerLatest.BLACK, '0011103', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '001111002', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '001121002', 0],
     [PlayerColor.BLACK, PlayerLatest.BLACK, '0011101', 0],
@@ -137,4 +166,4 @@ class RulePatternCompilerTest(ut.TestCase):
     pattern: str, match_nums: int):
     re_pattern = rpc.compile_san(player_color, player_latest)
     matched = re.findall(re_pattern, pattern)
-    self.assertEqual(len(matched), match_nums)
+    self.assertEqual(match_nums, len(matched))
