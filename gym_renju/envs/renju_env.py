@@ -21,7 +21,7 @@ from gym_renju.envs.core.domain.result import Result
 from gym_renju.envs import rule
 from gym_renju.envs.renju import RenjuState, RenjuBoard
 from gym_renju.envs.utils import utils
-from gym_renju.envs.utils.generator import DiscreteSpaceGenerator, RnejuPlayerGenerator
+from gym_renju.envs.utils.generator import DiscreteSpaceGenerator, PolicyGenerator
 
 class RenjuEnv(gym.Env):
   metadata = {"render.modes": ["human", "ansi"]}

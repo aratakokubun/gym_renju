@@ -102,7 +102,7 @@ class DiscreteSpaceGenerator(object):
   def generate(space_size: int) -> DiscreteSpace:
     return RenjuSpace(space_size)
 
-class RnejuPlayerGenerator(object):
+class PolicyGenerator(object):
   @staticmethod
   def generate(policy: str) -> PlayerPolicy:
     if policy == 'input':
