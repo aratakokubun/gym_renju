@@ -15,3 +15,11 @@ class InvalidPlayerColorException(Exception):
 
   def __str__(self) -> str:
     return 'Player color {0} is not allowed.'.format(self._player_color)
+
+class InvalidPolicyException(Exception):
+  def __init__(self, policy: str) -> None:
+    super().__init__()
+    self._policy = policy
+
+  def __str__(self) -> str:
+    return 'Policy {0} is not allowed.'.format(self._policy)

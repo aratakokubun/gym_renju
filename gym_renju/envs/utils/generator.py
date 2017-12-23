@@ -20,6 +20,7 @@ from gym_renju.envs.policy.input import InputPolicy
 from gym_renju.envs.state.renju_space import RenjuSpace
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils import rule_pattern_compile as rpc
+from gym_renju.envs.exception.invalid_type_exception import InvalidPolicyException
 
 class BoardStateGenerator(object):
   @staticmethod
@@ -109,3 +110,5 @@ class PolicyGenerator(object):
       return InputPolicy()
     elif policy == 'random':
       return RandomPolicy()
+    else:
+      raise InvalidPolicyException(policy)

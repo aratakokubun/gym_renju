@@ -14,9 +14,14 @@ from gym_renju.envs.core.domain.player import PlayerColor
 from gym_renju.envs.policy.ai import RandomPolicy
 from gym_renju.envs.policy.input import InputPolicy
 from gym_renju.envs.utils.generator import PolicyGenerator
+from gym_renju.envs.exception.invalid_type_exception import InvalidPolicyException
 
 class BoardStateGenerator(ut.TestCase):
   @parameterized.expand([['input', InputPolicy], ['random', RandomPolicy]])
-  def test_generate_all_empty_as_size(self, policy: str, clazz: type):
+  def test_generate_valid_policy(self, policy: str, clazz: type):
     actual = PolicyGenerator.generate(policy)
     self.assertEqual(clazz, type(actual))
+
+  def test_generate_invalid_policy(self):
+    with self.assertRaises(InvalidPolicyException):
+      PolicyGenerator.generate('invalid')

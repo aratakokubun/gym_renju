@@ -9,6 +9,7 @@ Utility module for renju envs.
 # Imports
 from typing import List, Tuple
 import copy
+
 from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.core.domain.rule_pattern import RulePattern
 from gym_renju.envs.core.domain.result import Result

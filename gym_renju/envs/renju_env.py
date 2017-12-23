@@ -31,8 +31,7 @@ class RenjuEnv(gym.Env):
     @param players: List of player types
     @param board_size: board size
     '''
-    # FIXME: Generate players
-    self._players = list(map(PlayerType, players))
+    self._players = list(map(PolicyGenerator, players))
     self._board_size = board_size
     self._board = RenjuBoard(board_size)
     self._swap_first = swap_first
@@ -52,12 +51,7 @@ class RenjuEnv(gym.Env):
     self._states = [self._state]
     self._actions = []
     self.action_space = DiscreteSpaceGenerator.generate(self._board_size**2)
-    self._set_policy()
     self._start()
-
-  def _set_policy(self) -> None:
-    # TODO: Set policy according to the players
-    pass
 
   def _start(self) -> None:
     # TODO: Start game
