@@ -1,0 +1,9 @@
+
+{
+  "win": 1.5,
+  "lose": -0.5,
+  "draw": {
+    "playFirst": -2.5,
+    "drawFirst": 3.0
+  }
+}

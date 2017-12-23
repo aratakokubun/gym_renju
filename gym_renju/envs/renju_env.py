@@ -79,7 +79,7 @@ class RenjuEnv(gym.Env):
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
     '''
     if self.action_space.contains(action):
-      raise error.Error('Unrecognized opponent policy {}'.format(self.opponent))
+      raise error.Error('Action[{}] is not in space'.format(action))
 
     self._state = self._state.act(action)
     self._actions.append(self._state.get_board().get_last_action())
