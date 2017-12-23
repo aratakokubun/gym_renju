@@ -5,9 +5,9 @@ register(
     id='Renju19x19-v0',
     entry_point='gym_renju.envs:RenjuEnv',
     kwargs={
-        'player_black': 'input',
-        'player_white': 'begginer',
+        'players': ['input', 'beginner'],
         'board_size': 19,
+        'swap_first': True,
     },
     nondeterministic=True,
 )
@@ -18,11 +18,9 @@ register(
     id='Renju19x19-learning-v0',
     entry_point='gym_renju.envs:RenjuEnv',
     kwargs={
-        'player_black': 'input',
-        'player_white': 'input',
+        'players': ['input', 'input'],
         'board_size': 19,
         'swap_first': True,
-        'rule': 'RIF'
     },
     nondeterministic=True,
 )

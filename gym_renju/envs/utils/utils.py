@@ -9,7 +9,9 @@ Utility module for renju envs.
 # Imports
 from typing import List, Tuple
 import copy
-from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
+from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
+from gym_renju.envs.core.domain.rule_pattern import RulePattern
+from gym_renju.envs.core.domain.result import Result
 
 def valid_player_colors() -> List[PlayerColor]:
   return [PlayerColor.BLACK, PlayerColor.WHITE]
@@ -62,3 +64,18 @@ def mark_latest(board_state: List[int], latest_action: int) -> List[int]:
   copied_board = copy.deepcopy(board_state)
   copied_board[latest_action] = latest_color.value
   return copied_board
+
+WIN_PATTERN = [RulePattern.GO_REN]
+LOSE_PATTERN = [
+  RulePattern.TYO_REN, RulePattern.YONYON_RYOTO, RulePattern.YONYON_TYODA,
+  RulePattern.YONYON_SORYU, RulePattern.YONYON, RulePattern.SANSAN]
+def pattern_to_result(pattern: RulePattern) -> Result:
+  if pattern in WIN_PATTERN:
+    return Result.WIN
+  elif pattern in LOSE_PATTERN:
+    return Result.LOSE
+  else:
+    return Result.NONE
+
+def finish(pattern: RulePattern) -> bool:
+  return pattern_to_result(pattern) in [Result.WIN, Result.LOSE]

@@ -9,8 +9,9 @@ Test module for BoardStateGenerator.
 # Imports
 import unittest as ut
 from parameterized import parameterized
+
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
-from gym_renju.envs.domain.player import PlayerColor
+from gym_renju.envs.core.domain.player import PlayerColor
 
 class BoardStateGenerator(ut.TestCase):
   @parameterized.expand([[7], [9], [15], [19]])

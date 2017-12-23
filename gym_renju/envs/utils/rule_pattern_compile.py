@@ -7,7 +7,8 @@ Rule pattern compiler modules.
 '''
 
 from typing import Dict
-from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
+
+from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 
 GO_REN = '(?:^|[^{0}{1}])[{0}{1}]{{5}}(?=(?:$|[^{0}{1}]))'
 MORE_GO_REN = '[{0}{1}]{{5}}'

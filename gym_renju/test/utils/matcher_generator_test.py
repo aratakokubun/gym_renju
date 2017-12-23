@@ -8,6 +8,7 @@ Test module for RuleMatcherGenerator.
 
 # Imports
 import unittest as ut
+
 from gym_renju.envs.utils.generator import MatcherAny, MatcherCount
 
 class BoardStateGenerator(ut.TestCase):

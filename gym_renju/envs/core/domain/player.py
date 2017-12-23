@@ -11,6 +11,7 @@ from enum import Enum
 
 class PlayerType(Enum):
   INPUT = 'input'
+  HUMAN = 'human'
   RANDOM = 'random'
   BEGINNER = 'beginner'
   INTERMEDIATE = 'intermediate'

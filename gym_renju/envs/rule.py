@@ -9,8 +9,8 @@ Rule definition modules for Renju Game .
 from typing import List, Tuple
 import operator
 
-from gym_renju.envs.domain.player import PlayerColor
-from gym_renju.envs.domain.rule_pattern import RulePattern
+from gym_renju.envs.core.domain.player import PlayerColor
+from gym_renju.envs.core.domain.rule_pattern import RulePattern
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils.generator import RuleMatcherGenerator
 

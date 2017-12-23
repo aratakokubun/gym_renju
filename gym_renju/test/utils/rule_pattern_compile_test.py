@@ -10,7 +10,8 @@ Test module for rule pattern compiler.
 import unittest as ut
 import re
 from parameterized import parameterized
-from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
+
+from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils import rule_pattern_compile as rpc
 
 class RulePatternCompilerTest(ut.TestCase):

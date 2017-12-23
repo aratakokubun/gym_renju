@@ -14,4 +14,5 @@ class Result(Enum):
   WIN = 1
   LOSE = 2
   DRAW = 3
+  RESET = 4
   

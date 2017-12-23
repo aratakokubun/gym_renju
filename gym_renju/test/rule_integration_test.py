@@ -9,8 +9,9 @@ Integration Test module for rule.
 # Imports
 import unittest as ut
 from parameterized import parameterized
-from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
-from gym_renju.envs.domain.rule_pattern import RulePattern
+
+from gym_renju.envs.core.domain.player import PlayerColor
+from gym_renju.envs.core.domain.rule_pattern import RulePattern
 from gym_renju.envs import rule
 
 class JudgeIntegrationTest(ut.TestCase):

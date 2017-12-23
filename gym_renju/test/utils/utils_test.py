@@ -8,8 +8,9 @@ Test module for renju utils.
 
 # Imports
 import unittest as ut
+
+from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils import utils
-from gym_renju.envs.domain.player import PlayerColor, PlayerType, PlayerLatest
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
 
 class UtilsTest(ut.TestCase):

@@ -6,40 +6,17 @@ Renju Game Model Modules.
 @data: 2017/12/04
 '''
 
-import numpy as np
-import gym
-from gym import spaces
-from gym import error
-from gym.utils import seeding
-from six import StringIO
-import sys
-import six
+# Imports
 from typing import List
-import copy
 
-from gym_renju.envs.domain.player import PlayerColor, PlayerType
+import copy
+import numpy as np
+import six
+
+from gym_renju.envs.core.domain.player import PlayerColor
 from gym_renju.envs import rule
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
-
-class RenjuState(object):
-  '''
-  Renju State class to preserve a current player and a board.
-  '''
-  def __init__(self, board: List, player_color: PlayerColor) -> None:
-    assert player_color in utils.valid_player_colors()
-    self._board = board
-    self._player_color = player_color
-
-  def act(self, action):
-    return RenjuState(self._board.play(action, self._player_color),
-      utils.next_player(self._player_color))
-
-  def __repr__(self):
-    '''
-    Output board state
-    '''
-    return 'To play: {}\n{}'.format(six.u(self._player_color), self._board.__repr__())
 
 class RenjuBoard(object):
   '''
@@ -60,7 +37,7 @@ class RenjuBoard(object):
     return next_board
 
   def receive_act(self, action: int, player_color: PlayerColor) -> None:
-    self._board_state[action] = player_color
+    self._board_state[action] = player_color.value
     self._move_count += 1
     self._last_action = action
 
@@ -74,8 +51,43 @@ class RenjuBoard(object):
     self._board_state = board_state
 
   def copy_state(self, board: any) -> None:
-    self.set_board_state(copy.deepcopy(board._board_state))
-    self._move_count = board._move_count
+    self.set_board_state(copy.deepcopy(board.get_board_state()))
+    self._move_count = board.get_move_count()
 
   def to_np_arr(self) -> np.array:
     return np.array(self._board_state)
+
+  def get_move_count(self) -> int:
+    return self._move_count
+
+  def get_last_action(self) -> int:
+    return self._last_action
+
+  def __repr__(self):
+    # TODO
+    pass
+
+class RenjuState(object):
+  '''
+  Renju State class to preserve a current player and a board.
+  '''
+  def __init__(self, board: RenjuBoard, player_color: PlayerColor) -> None:
+    assert player_color in utils.valid_player_colors()
+    self._board = board
+    self._player_color = player_color
+
+  def act(self, action: int):
+    return RenjuState(self._board.act(action, self._player_color),
+      utils.next_player(self._player_color))
+
+  def get_board(self) -> RenjuBoard:
+    return self._board
+
+  def get_player_color(self) -> PlayerColor:
+    return self._board
+
+  def __repr__(self):
+    '''
+    Output board state
+    '''
+    return 'To play: {}\n{}'.format(six.u(self._player_color), self._board.__repr__())

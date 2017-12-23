@@ -10,8 +10,14 @@ Utility module for generating game states and matchers.
 import random
 import re
 from typing import List
-from gym_renju.envs.domain.player import PlayerColor, PlayerLatest
-from gym_renju.envs.domain.rule_pattern import RulePattern
+
+from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
+from gym_renju.envs.core.domain.rule_pattern import RulePattern
+from gym_renju.envs.core.contract.space import DiscreteSpace
+from gym_renju.envs.core.contract.policy import PlayerPolicy
+from gym_renju.envs.policy.ai import RandomPolicy
+from gym_renju.envs.policy.input import InputPolicy
+from gym_renju.envs.state.renju_space import RenjuSpace
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils import rule_pattern_compile as rpc
 
@@ -26,7 +32,7 @@ class BoardStateGenerator(object):
 
 class MatcherCallable(object):
   def call(self, lines: List, regix: str) -> bool:
-    pass
+    raise NotImplementedError
 
 class MatcherAny(MatcherCallable):
   def call(self, lines: List, regix: str) -> bool:
@@ -90,3 +96,16 @@ class RuleMatcherGenerator(object):
       return BLACK_MATCHERS
     elif player_color is PlayerColor.WHITE:
       return WHITE_MATCHERS
+
+class DiscreteSpaceGenerator(object):
+  @staticmethod
+  def generate(space_size: int) -> DiscreteSpace:
+    return RenjuSpace(space_size)
+
+class RnejuPlayerGenerator(object):
+  @staticmethod
+  def generate(policy: str) -> PlayerPolicy:
+    if policy == 'input':
+      return InputPolicy()
+    elif policy == 'random':
+      return RandomPolicy()
