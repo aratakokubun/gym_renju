@@ -16,9 +16,7 @@ from gym import error
 from gym.utils import seeding
 from six import StringIO
 
-from gym_renju.envs.core.domain.player import PlayerType, PlayerColor
-from gym_renju.envs.core.domain.result import Result
-from gym_renju.envs.core.contract.container import Container
+from gym_renju.envs.core.domain.player import PlayerColor
 from gym_renju.envs.renju import RenjuState, RenjuBoard
 from gym_renju.envs.rule import rule
 from gym_renju.envs.utils import utils
@@ -35,7 +33,11 @@ class RenjuEnv(gym.Env):
     # Compile DI container
     self._container = renju_container.compile_container()
 
-    self._players = list(map(lambda player: self._container.get_policy_factory().generate(player), players))
+    policy_factory = self._container.get_policy_factory()
+    self._policies = {
+      PlayerColor.BLACK: policy_factory.generate(players[0]),
+      PlayerColor.WHITE: policy_factory.generate(players[1])
+    }
     self._board_size = board_size
     self._board = RenjuBoard(board_size)
     self._swap_first = swap_first
@@ -74,21 +76,14 @@ class RenjuEnv(gym.Env):
     outfile.write(repr(self._state) + '\n')
     return outfile
 
-  def _sar(self, action: int) -> Tuple:
-    pattern = rule.judge_game(self._container.get_rule_matcher_factory(),
-      self._state.get_board().get_board_state(), self._board_size,
-      self._state.get_player_color(), action)
-    result = utils.pattern_to_result(pattern)
-    if utils.board_full()
-    if result is Result.WIN:
-      return self._state.get_board(), 1, True, {'state': self._state.get_board()}
-    elif result is Result.WIN:
-      return self._state.get_board(), -1, True, {'state': self._state.get_board()}
-    elif result is Result.DRAW:
-      return self._state.get_board(), 0., True, {'state': self._state.get_board()}
-    else:
-      # FIXME: Play Auto player
-      return self._state.get_board(), 0., False, {'state': self._state.get_board()}
+  def _step_auto(self):
+    next_player = utils.next_player(self._state.get_player_color())
+    policy = self._policies.get(next_player)
+    if policy.auto_act():
+      # Calling _step recursively but not calling it more than 2 times.
+      # So this is not problematic for recursive calling.
+      action = policy.act(self._state.get_board().get_board_state(), self.action_space, next_player)
+      self._step(action)
 
   def _step(self, action: int) -> Tuple:
     '''
@@ -105,20 +100,16 @@ class RenjuEnv(gym.Env):
     self._actions.append(self._state.get_board().get_last_action())
     self.action_space.remove(action) # remove current action from action_space
 
-    # FIXME: Refactor
-    pattern = rule.judge_game(self._container.get_rule_matcher_factory(),
-      self._state.get_board().get_board_state(), self._board_size,
-      self._state.get_player_color(), action)
+    board = self._state.get_board()
+    pattern = rule.judge_game(self._container.get_rule_matcher_factory(), board.get_board_state(),
+      self._board_size, self._state.get_player_color(), action)
     result = utils.pattern_to_result(pattern)
-    if result is Result.WIN:
-      return self._state.get_board(), 1, True, {'state': self._state.get_board()}
-    elif result is Result.WIN:
-      return self._state.get_board(), -1, True, {'state': self._state.get_board()}
-    elif result is Result.DRAW:
-      return self._state.get_board(), 0., True, {'state': self._state.get_board()}
+    reward = self._container.get_reward_factory().generate().get_reward(result)
+    if utils.finish(result):
+      return board, reward, True, {'state': board}
     else:
-      # FIXME: Play Auto player
-      return self._state.get_board(), 0., False, {'state': self._state.get_board()}
+      self._step_auto()
+      return board, reward, True, {'state': board}
 
   def get_state(self) -> RenjuState:
     return self._state

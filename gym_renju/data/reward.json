@@ -4,5 +4,6 @@
   "draw": {
     "playFirst": 0.0,
     "drawFirst": 0.0
-  }
+  },
+  "other": 0.0
 }

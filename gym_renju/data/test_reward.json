@@ -5,5 +5,6 @@
   "draw": {
     "playFirst": -2.5,
     "drawFirst": 3.0
-  }
+  },
+  "other": 4.0
 }

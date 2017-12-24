@@ -31,9 +31,11 @@ class ConfiguredReward(Reward):
     self._reward_map[PlayerColor.BLACK][Result.WIN] = data["win"]
     self._reward_map[PlayerColor.BLACK][Result.LOSE] = data["lose"]
     self._reward_map[PlayerColor.BLACK][Result.DRAW] = data["draw"]["playFirst"]
+    self._reward_map[PlayerColor.BLACK][Result.NONE] = data["other"]
     self._reward_map[PlayerColor.WHITE][Result.WIN] = data["win"]
     self._reward_map[PlayerColor.WHITE][Result.LOSE] = data["lose"]
     self._reward_map[PlayerColor.WHITE][Result.DRAW] = data["draw"]["drawFirst"]
+    self._reward_map[PlayerColor.WHITE][Result.NONE] = data["other"]
 
   def get_reward(self, player: PlayerColor, result: Result) -> float:
     return self._reward_map[player][result]
