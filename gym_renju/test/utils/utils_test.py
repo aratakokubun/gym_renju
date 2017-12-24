@@ -8,6 +8,7 @@ Test module for renju utils.
 
 # Imports
 import unittest as ut
+from parameterized import parameterized
 
 from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils import utils
@@ -56,3 +57,11 @@ class UtilsTest(ut.TestCase):
     board[latest_action] = PlayerColor.BLACK.value
     copied_board = utils.mark_latest(board, latest_action)
     self.assertEqual(PlayerLatest.BLACK.value, copied_board[latest_action])
+
+  def test_board_full(self):
+    board = bsg.generate_full(15)
+    self.assertTrue(utils.board_full(board))
+
+  def test_board_not_full(self):
+    board = bsg.generate_empty(15)
+    self.assertFalse(utils.board_full(board))

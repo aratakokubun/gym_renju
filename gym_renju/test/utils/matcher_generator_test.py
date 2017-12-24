@@ -9,7 +9,7 @@ Test module for RuleMatcherGenerator.
 # Imports
 import unittest as ut
 
-from gym_renju.envs.utils.generator import MatcherAny, MatcherCount
+from gym_renju.envs.rule.renju_rule_matcher import MatcherAny, MatcherCount
 
 class BoardStateGenerator(ut.TestCase):
   def test_when_any_match_then_true(self):

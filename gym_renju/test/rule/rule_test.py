@@ -12,7 +12,7 @@ from typing import Tuple, List
 from parameterized import parameterized
 
 from gym_renju.envs.core.domain.player import PlayerColor
-from gym_renju.envs import rule
+from gym_renju.envs.rule import rule
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
 
 # Shorten constants

@@ -18,10 +18,11 @@ from six import StringIO
 
 from gym_renju.envs.core.domain.player import PlayerType, PlayerColor
 from gym_renju.envs.core.domain.result import Result
-from gym_renju.envs import rule
+from gym_renju.envs.core.contract.container import Container
 from gym_renju.envs.renju import RenjuState, RenjuBoard
+from gym_renju.envs.rule import rule
 from gym_renju.envs.utils import utils
-from gym_renju.envs.utils.generator import DiscreteSpaceGenerator, PolicyGenerator
+from gym_renju.envs import renju_container
 
 class RenjuEnv(gym.Env):
   metadata = {"render.modes": ["human", "ansi"]}
@@ -31,7 +32,10 @@ class RenjuEnv(gym.Env):
     @param players: List of player types
     @param board_size: board size
     '''
-    self._players = list(map(PolicyGenerator, players))
+    # Compile DI container
+    self._container = renju_container.compile_container()
+
+    self._players = list(map(lambda player: self._container.get_policy_factory().generate(player), players))
     self._board_size = board_size
     self._board = RenjuBoard(board_size)
     self._swap_first = swap_first
@@ -39,7 +43,7 @@ class RenjuEnv(gym.Env):
     # Set env attributes
     shape = (board_size, board_size)
     self.observation_space = spaces.Box(np.zeros(shape), np.ones(shape))
-    self.action_space = DiscreteSpaceGenerator.generate(board_size**2)
+    self.action_space = self._container.get_space_factory().generate(board_size**2)
     # Not effective to set reward limit
     # self.reward_range = (-100, 100)
 
@@ -50,7 +54,7 @@ class RenjuEnv(gym.Env):
     self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.BLACK)
     self._states = [self._state]
     self._actions = []
-    self.action_space = DiscreteSpaceGenerator.generate(self._board_size**2)
+    self.action_space = self._container.get_space_factory().generate(self._board_size**2)
     self._start()
 
   def _start(self) -> None:
@@ -86,7 +90,8 @@ class RenjuEnv(gym.Env):
     self.action_space.remove(action) # remove current action from action_space
 
     # FIXME: Refactor
-    pattern = rule.judge_game(self._state.get_board().get_board_state(), self._board_size,
+    pattern = rule.judge_game(self._container.get_rule_matcher_factory(),
+      self._state.get_board().get_board_state(), self._board_size,
       self._state.get_player_color(), action)
     result = utils.pattern_to_result(pattern)
     if result is Result.WIN:

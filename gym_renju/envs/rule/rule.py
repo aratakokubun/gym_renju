@@ -11,8 +11,8 @@ import operator
 
 from gym_renju.envs.core.domain.player import PlayerColor
 from gym_renju.envs.core.domain.rule_pattern import RulePattern
+from gym_renju.envs.core.contract.factory import RuleMatcherFactory
 from gym_renju.envs.utils import utils
-from gym_renju.envs.utils.generator import RuleMatcherGenerator
 
 def search_sequence(board_state: List[int], start: int, search_dir: Tuple, size: int) -> List:
   '''
@@ -36,11 +36,11 @@ def search_sequence(board_state: List[int], start: int, search_dir: Tuple, size:
       break
   return (count, color)
 
-def judge_game(board_state: List[int], board_size: int, current_player: PlayerColor,
-  latest_action: int) -> RulePattern:
+def judge_game(factory: RuleMatcherFactory, board_state: List[int], board_size: int,
+  current_player: PlayerColor, latest_action: int) -> RulePattern:
   marked_board = utils.mark_latest(board_state, latest_action)
   marked_lines = utils.get_target_lines(marked_board, board_size, latest_action)
-  rule_matchers = RuleMatcherGenerator.generate(current_player)
+  rule_matchers = factory.generate(current_player)
   for matcher in rule_matchers:
     if matcher.match(marked_lines):
       return matcher.get_rule_pattern()

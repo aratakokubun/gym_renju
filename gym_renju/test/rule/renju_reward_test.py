@@ -12,7 +12,7 @@ from parameterized import parameterized
 
 from gym_renju.envs.core.domain.player import PlayerColor
 from gym_renju.envs.core.domain.result import Result
-from gym_renju.envs.state.renju_reward import ConfiguredReward
+from gym_renju.envs.rule.renju_reward import ConfiguredReward
 
 class RenjuRewardNoConfigTest(ut.TestCase):
   def setUp(self):

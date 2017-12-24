@@ -19,3 +19,9 @@ class BoardStateGenerator(ut.TestCase):
     actual = bsg.generate_empty(size_input)
     self.assertEqual(size_input**2, len(actual))
     self.assertTrue(all([s is PlayerColor.EMPTY for s in actual]))
+
+  @parameterized.expand([[7], [9], [15], [19]])
+  def test_generate_full_as_size(self, size_input: int):
+    actual = bsg.generate_full(size_input)
+    self.assertEqual(size_input**2, len(actual))
+    self.assertTrue(all([s in [PlayerColor.BLACK, PlayerColor.WHITE] for s in actual]))

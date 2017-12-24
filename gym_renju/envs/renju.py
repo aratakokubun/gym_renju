@@ -14,7 +14,7 @@ import numpy as np
 import six
 
 from gym_renju.envs.core.domain.player import PlayerColor
-from gym_renju.envs import rule
+from gym_renju.envs.rule import rule
 from gym_renju.envs.utils import utils
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
 

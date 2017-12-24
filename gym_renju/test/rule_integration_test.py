@@ -12,11 +12,12 @@ from parameterized import parameterized
 
 from gym_renju.envs.core.domain.player import PlayerColor
 from gym_renju.envs.core.domain.rule_pattern import RulePattern
-from gym_renju.envs import rule
+from gym_renju.envs.rule import rule
+from gym_renju.envs.rule.rule_matcher_factory_impl import RuleMatcherFactoryImpl
 
 class JudgeIntegrationTest(ut.TestCase):
   def setUp(self):
-    self.board_state = [
+    self._board_state = [
         0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1,
         0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1,
         0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -33,7 +34,8 @@ class JudgeIntegrationTest(ut.TestCase):
         0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0,
     ]
-    self.board_size = 15
+    self._board_size = 15
+    self._factory = RuleMatcherFactoryImpl()
 
   @parameterized.expand([
     [6, RulePattern.YONYON_RYOTO],
@@ -50,5 +52,5 @@ class JudgeIntegrationTest(ut.TestCase):
     [219, RulePattern.YONYON_SORYU],
   ])
   def test_is_lose_game(self, latest_action: int, result_pattern: RulePattern):
-    actual = rule.judge_game(self.board_state, self.board_size, PlayerColor.BLACK, latest_action)
+    actual = rule.judge_game(self._factory, self._board_state, self._board_size, PlayerColor.BLACK, latest_action)
     self.assertEqual(result_pattern, actual)

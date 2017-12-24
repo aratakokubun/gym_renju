@@ -66,17 +66,25 @@ def mark_latest(board_state: List[int], latest_action: int) -> List[int]:
   copied_board[latest_action] = latest_color.value
   return copied_board
 
+def board_full(board_state: List[int]) -> bool:
+  return all(s is not PlayerColor.EMPTY for s in board_state)
+
 WIN_PATTERN = [RulePattern.GO_REN]
 LOSE_PATTERN = [
   RulePattern.TYO_REN, RulePattern.YONYON_RYOTO, RulePattern.YONYON_TYODA,
   RulePattern.YONYON_SORYU, RulePattern.YONYON, RulePattern.SANSAN]
+DRAW_PATTERN = [
+  RulePattern.FULL
+]
 def pattern_to_result(pattern: RulePattern) -> Result:
   if pattern in WIN_PATTERN:
     return Result.WIN
   elif pattern in LOSE_PATTERN:
     return Result.LOSE
+  elif pattern in DRAW_PATTERN:
+    return Result.DRAW
   else:
     return Result.NONE
 
 def finish(pattern: RulePattern) -> bool:
-  return pattern_to_result(pattern) in [Result.WIN, Result.LOSE]
+  return pattern_to_result(pattern) in [Result.WIN, Result.LOSE, Result.DRAW]

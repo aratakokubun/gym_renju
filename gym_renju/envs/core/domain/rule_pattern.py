@@ -18,3 +18,4 @@ class RulePattern(Enum):
   YONYON = "yonyon"
   SANSAN = "sansan"
   NONE = "sansan"
+  FULL = "full"
