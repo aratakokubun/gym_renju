@@ -67,7 +67,7 @@ def mark_latest(board_state: List[int], latest_action: int) -> List[int]:
   return copied_board
 
 def board_full(board_state: List[int]) -> bool:
-  return all(s is not PlayerColor.EMPTY for s in board_state)
+  return all(s is not PlayerColor.EMPTY.value for s in board_state)
 
 WIN_PATTERN = [RulePattern.GO_REN]
 LOSE_PATTERN = [

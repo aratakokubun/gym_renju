@@ -74,6 +74,22 @@ class RenjuEnv(gym.Env):
     outfile.write(repr(self._state) + '\n')
     return outfile
 
+  def _sar(self, action: int) -> Tuple:
+    pattern = rule.judge_game(self._container.get_rule_matcher_factory(),
+      self._state.get_board().get_board_state(), self._board_size,
+      self._state.get_player_color(), action)
+    result = utils.pattern_to_result(pattern)
+    if utils.board_full()
+    if result is Result.WIN:
+      return self._state.get_board(), 1, True, {'state': self._state.get_board()}
+    elif result is Result.WIN:
+      return self._state.get_board(), -1, True, {'state': self._state.get_board()}
+    elif result is Result.DRAW:
+      return self._state.get_board(), 0., True, {'state': self._state.get_board()}
+    else:
+      # FIXME: Play Auto player
+      return self._state.get_board(), 0., False, {'state': self._state.get_board()}
+
   def _step(self, action: int) -> Tuple:
     '''
         Returns:

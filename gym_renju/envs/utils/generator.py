@@ -16,12 +16,12 @@ from gym_renju.envs.utils import utils
 class BoardStateGenerator(object):
   @staticmethod
   def generate_empty(board_size: int) -> List[int]:
-    return [PlayerColor.EMPTY for _ in range(board_size**2)]
+    return [PlayerColor.EMPTY.value for _ in range(board_size**2)]
 
   @staticmethod
   def generate_random(board_size: int) -> List[int]:
-    return [random.choice(list(PlayerColor)) for _ in range(board_size**2)]
+    return [random.choice(list(PlayerColor)).value for _ in range(board_size**2)]
 
   @staticmethod
   def generate_full(board_size: int) -> List[int]:
-    return [random.choice(utils.valid_player_colors()) for _ in range(board_size**2)]
+    return [random.choice(utils.valid_player_colors()).value for _ in range(board_size**2)]

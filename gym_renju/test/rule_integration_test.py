@@ -51,6 +51,26 @@ class JudgeIntegrationTest(ut.TestCase):
     [216, RulePattern.NONE],
     [219, RulePattern.YONYON_SORYU],
   ])
-  def test_is_lose_game(self, latest_action: int, result_pattern: RulePattern):
+  def test_is_pattern_match(self, latest_action: int, result_pattern: RulePattern):
     actual = rule.judge_game(self._factory, self._board_state, self._board_size, PlayerColor.BLACK, latest_action)
     self.assertEqual(result_pattern, actual)
+
+class JudgeDrawIntegrationTest(ut.TestCase):
+  def setUp(self):
+    self._board_state = [
+      1, 1, 1, 2, 2, 2, 1, 1, 1,
+      2, 2, 2, 1, 1, 1, 2, 2, 2,
+      1, 1, 2, 1, 2, 1, 2, 1, 1,
+      1, 1, 1, 2, 2, 2, 1, 1, 1,
+      2, 2, 2, 1, 1, 1, 2, 2, 2,
+      1, 1, 1, 2, 2, 2, 1, 1, 1,
+      2, 2, 2, 1, 1, 1, 2, 2, 2,
+      1, 1, 1, 2, 2, 2, 1, 1, 1,
+      1, 1, 1, 2, 2, 2, 1, 1, 1,
+    ]
+    self._board_size = 9
+    self._factory = RuleMatcherFactoryImpl()
+
+  def test_is_draw(self):
+    actual = rule.judge_game(self._factory, self._board_state, self._board_size, PlayerColor.BLACK, 0)
+    self.assertEqual(RulePattern.FULL, actual)

@@ -44,6 +44,8 @@ def judge_game(factory: RuleMatcherFactory, board_state: List[int], board_size: 
   for matcher in rule_matchers:
     if matcher.match(marked_lines):
       return matcher.get_rule_pattern()
+  if utils.board_full(board_state):
+    return RulePattern.FULL
   return RulePattern.NONE
 
 def legal_actions(board_state: List[int]) -> List[int]:
