@@ -52,16 +52,21 @@ class RenjuEnv(gym.Env):
     # Set attributes to keep states
     self._reset()
 
+  def _step_auto(self):
+    next_player = utils.next_player(self._state.get_player_color())
+    policy = self._policies.get(next_player)
+    if policy.auto_act():
+      # Calling _step recursively but not calling it more than 2 times.
+      # So this is not problematic for recursive calling.
+      action = policy.act(self._state.get_board().get_board_state(), self.action_space, next_player)
+      self._step(action)
+
   def _reset(self) -> None:
     self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.BLACK)
     self._states = [self._state]
     self._actions = []
     self.action_space = self._container.get_space_factory().generate(self._board_size**2)
-    self._start()
-
-  def _start(self) -> None:
-    # TODO: Start game
-    pass
+    self._step_auto()
 
   def _seed(self, seed=None) -> List:
       seed1 = seeding.np_random(seed)
@@ -75,15 +80,6 @@ class RenjuEnv(gym.Env):
     outfile = StringIO() if mode == 'ansi' else sys.stdout
     outfile.write(repr(self._state) + '\n')
     return outfile
-
-  def _step_auto(self):
-    next_player = utils.next_player(self._state.get_player_color())
-    policy = self._policies.get(next_player)
-    if policy.auto_act():
-      # Calling _step recursively but not calling it more than 2 times.
-      # So this is not problematic for recursive calling.
-      action = policy.act(self._state.get_board().get_board_state(), self.action_space, next_player)
-      self._step(action)
 
   def _step(self, action: int) -> Tuple:
     '''
