@@ -23,7 +23,6 @@ class ConfiguredReward(Reward):
     @param path: file path to read from configuration
     @throws JSONDecodeError on failed to read json
     '''
-    print(path)
     data = json.load(open(path))
     self._reward_map = {}
     self._reward_map[PlayerColor.BLACK] = {}

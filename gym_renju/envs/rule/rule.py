@@ -53,6 +53,6 @@ def legal_actions(board_state: List[int]) -> List[int]:
   Return list of legal actions based on the board state and current player color.
   Contains actions resulted in lose because of against of the rule.
   '''
-  legal = lambda s: s[1] is PlayerColor.EMPTY
+  legal = lambda s: s[1] == PlayerColor.EMPTY.value
   action = lambda s: s[0]
   return list(map(action, filter(legal, enumerate(board_state))))

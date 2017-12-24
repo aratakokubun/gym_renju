@@ -50,10 +50,13 @@ class RenjuEnv(gym.Env):
     # self.reward_range = (-100, 100)
 
     # Set attributes to keep states
-    self._reset()
+    self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.BLACK)
+    self._states = [self._state]
+    self._actions = []
+    self._step_auto()
 
   def _step_auto(self):
-    next_player = utils.next_player(self._state.get_player_color())
+    next_player = self._state.get_player_color()
     policy = self._policies.get(next_player)
     if policy.auto_act():
       # Calling _step recursively but not calling it more than 2 times.
@@ -62,6 +65,9 @@ class RenjuEnv(gym.Env):
       self._step(action)
 
   def _reset(self) -> None:
+    if self._swap_first:
+      self._policies[PlayerColor.BLACK], self._policies[PlayerColor.WHITE] = \
+        self._policies[PlayerColor.WHITE], self._policies[PlayerColor.BLACK]
     self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.BLACK)
     self._states = [self._state]
     self._actions = []
@@ -89,23 +95,26 @@ class RenjuEnv(gym.Env):
             done (boolean): whether the episode has ended, in which case further step() calls will return undefined results
             info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)
     '''
-    if self.action_space.contains(action):
+    if not self.action_space.contains(action):
       raise error.Error('Action[{}] is not in space'.format(action))
 
+    player_color = self._state.get_player_color()
     self._state = self._state.act(action)
     self._actions.append(self._state.get_board().get_last_action())
     self.action_space.remove(action) # remove current action from action_space
 
     board = self._state.get_board()
     pattern = rule.judge_game(self._container.get_rule_matcher_factory(), board.get_board_state(),
-      self._board_size, self._state.get_player_color(), action)
+      self._board_size, player_color, action)
+    print(pattern)
     result = utils.pattern_to_result(pattern)
-    reward = self._container.get_reward_factory().generate().get_reward(result)
+    reward = self._container.get_reward_factory().generate().get_reward(
+      self._state.get_player_color(), result)
     if utils.finish(result):
       return board, reward, True, {'state': board}
     else:
       self._step_auto()
-      return board, reward, True, {'state': board}
+      return board, reward, False, {'state': board}
 
   def get_state(self) -> RenjuState:
     return self._state

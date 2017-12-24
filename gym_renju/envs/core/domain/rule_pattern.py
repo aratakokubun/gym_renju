@@ -17,5 +17,5 @@ class RulePattern(Enum):
   YONYON_SORYU = "yonyon-soryu"
   YONYON = "yonyon"
   SANSAN = "sansan"
-  NONE = "sansan"
+  NONE = "none"
   FULL = "full"

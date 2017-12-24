@@ -86,13 +86,13 @@ def pattern_to_result(pattern: RulePattern) -> Result:
   else:
     return Result.NONE
 
-def finish(pattern: RulePattern) -> bool:
-  return pattern_to_result(pattern) in [Result.WIN, Result.LOSE, Result.DRAW]
+def finish(result: Result) -> bool:
+  return result in [Result.WIN, Result.LOSE, Result.DRAW]
 
 SYMBOL_MAP = {
   PlayerColor.EMPTY: '.',
   PlayerColor.BLACK: 'X',
   PlayerColor.WHITE: 'O',
 }
-def color_to_symbol(current_player: PlayerColor) -> str:
-  return SYMBOL_MAP.get(current_player)
+def color_to_symbol(current_player_index: int) -> str:
+  return SYMBOL_MAP.get(PlayerColor(current_player_index))
