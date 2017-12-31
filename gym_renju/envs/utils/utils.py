@@ -31,7 +31,7 @@ def coords_to_index(coords: Tuple, board_size: int) -> int:
   return coords[0]*board_size + coords[1]
 
 def get_target_lines(board_state: List[int], board_size: int,
-  latest_action: int) -> List[List[int]]:
+  latest_action: int) -> Tuple[List[int], List[int]]:
   coords = index_to_coords(latest_action, board_size)
 
   rb_start = (coords[0] - min(coords[0], coords[1]), coords[1] - min(coords[0], coords[1]))
@@ -42,13 +42,14 @@ def get_target_lines(board_state: List[int], board_size: int,
   lb_start = (coords[0] - min(coords[0], col_from_right),
     coords[1] + min(coords[0], col_from_right))
   lb_start_index = coords_to_index(lb_start, board_size)
-  lb_end_index = board_size**2 if lb_start[0] > 0 else board_size * (lb_start[1] + 1)
+  lb_end_index = board_size**2 - 1 \
+    if lb_start[0] > 0 else board_size * (lb_start[1] + 1) - 1
 
   return [
     board_state[coords[0]*board_size:(coords[0]+1)*board_size],
     board_state[coords[1]::board_size],
     board_state[rb_start_index:rb_end_index:board_size+1],
-    board_state[lb_start_index:lb_end_index:board_size-1]
+    board_state[lb_start_index:lb_end_index:board_size-1],
   ]
 
 def color_to_latest(current_player_index: int) -> PlayerLatest:

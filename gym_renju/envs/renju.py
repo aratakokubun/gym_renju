@@ -65,26 +65,28 @@ class RenjuBoard(object):
 
   def __repr__(self):
     out = ""
-    letters = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')[:self._board_size]
+    size = len(self._board_state)
+
+    letters = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')[:size]
 
     label_move = "Move: " + str(self._move_count) + "\n"
     label_letters = "     " + " ".join(letters) + "\n"
-    label_boundry = "   " + "+-" + "".join(["-"] * (2 * self._board_size)) + "+" + "\n"
+    label_boundry = "   " + "+-" + "".join(["-"] * (2 * size)) + "+" + "\n"
 
     # construct the board output
     out += (label_move + label_letters + label_boundry)
 
-    for i in range(self._board_size - 1, -1, -1):
+    for i in range(size - 1, -1, -1):
         line = ""
         line += (str("%2d" % (i + 1)) + " |" + " ")
-        for j in range(self._board_size):
+        for j in range(size):
             # check if it's the last move
-            index = i * self._board_size + j
-            line += utils.color_to_symbol(self._board_state[index])
-            if self._last_action and index == self._last_action:
-                line += ")"
-            else:
-                line += " "
+            # line += gomoku_util.color_shape[self.board_state[i][j]]
+            # if (i, j) == self.last_coord:
+            #     line += ")"
+            # else:
+            #     line += " "
+            line += utils.color_to_symbol(self._board_state[i][j]) + " "
         line += ("|" + "\n")
         out += line
     out += (label_boundry + label_letters)

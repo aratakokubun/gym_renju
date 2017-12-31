@@ -16,9 +16,9 @@ from gym_renju.envs.rule import rule
 from gym_renju.envs.utils.generator import BoardStateGenerator as bsg
 
 # Shorten constants
-BLACK = PlayerColor.BLACK
-WHITE = PlayerColor.WHITE
-EMPTY = PlayerColor.EMPTY
+BLACK = PlayerColor.BLACK.value
+WHITE = PlayerColor.WHITE.value
+EMPTY = PlayerColor.EMPTY.value
 
 class RuleTest(ut.TestCase):
   @parameterized.expand([[7], [9], [15], [19]])

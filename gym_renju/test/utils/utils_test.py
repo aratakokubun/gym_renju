@@ -8,7 +8,6 @@ Test module for renju utils.
 
 # Imports
 import unittest as ut
-from parameterized import parameterized
 
 from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 from gym_renju.envs.utils import utils
@@ -44,7 +43,7 @@ class UtilsTest(ut.TestCase):
     expected_line_row = [i for i in range(45, 60)]
     expected_line_col = [i for i in range(5, 15**2, 15)]
     expected_line_rb = [i for i in range(2, 15*13, 16)]
-    expected_line_lb = [i for i in range(8, 15*9, 14)]
+    expected_line_lb = [i for i in range(8, 15*9 - 1, 14)]
     actual_lines = utils.get_target_lines(board, size, latest_action)
     self.assertEqual(expected_line_row, actual_lines[0])
     self.assertEqual(expected_line_col, actual_lines[1])

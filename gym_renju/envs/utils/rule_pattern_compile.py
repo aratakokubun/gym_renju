@@ -7,23 +7,28 @@ Rule pattern compiler modules.
 '''
 
 from typing import Dict
+from functools import reduce
+import itertools as it
 
 from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
 
-GO_REN = '(?:^|[^{0}{1}])[{0}{1}]{{5}}(?=(?:$|[^{0}{1}]))'
-MORE_GO_REN = '[{0}{1}]{{5}}'
-TYO_REN = '[{0}{1}]{{6}}'
-TASSHI = '(?:^|[^{0}{2}]){1}[{0}{2}]{{4}}(?={1}(?:$|[^{0}{2}]))'
-YON = '(?:^|[^{0}{2}])' \
-  '([{0}{2}]{{4}}{1}|[{0}{2}]{{3}}{1}[{0}{2}]|[{0}{2}]{{2}}{1}[{0}{2}]{{2}}|' \
-  '[{0}{2}]{1}[{0}{2}]{{3}}|{1}[{0}{2}]{{4}})' \
-  '(?=(?:$|[^{0}{2}]))'
-YONYON_RYOTO = '(?:^|[^{0}]){0}{1}({0}{{2}}{2}|{0}{2}{0}|{2}{0}{{2}}){1}{0}(?=(?:$|[^{0}]))'
+def combination_match(patterns: Dict) -> str:
+  '''
+  generate combination of regex pattern match string.
+  @param pattern: Dictionary of pattern(str): count(int)
+  '''
+  seq = reduce(lambda x, y: x+y, [[key]*value for key, value in patterns.items()])
+  return reduce(lambda x, y: ''.join(x) + '|' + ''.join(y), set(it.permutations(seq)))
+
+GO_REN = '(?:^|[^{0}{1}])(' + combination_match({'{0}':4, '{1}':1}) + ')(?=(?:$|[^{0}{1}]))'
+MORE_GO_REN = combination_match({'{0}':4, '{1}':1})
+TYO_REN = combination_match({'{0}':5, '{1}':1})
+TASSHI = '(?:^|[^{0}{2}]){1}(' + combination_match({'{0}':3, '{2}':1}) + ')(?={1}(?:$|[^{0}{2}]))'
+YON = '(?:^|[^{0}{2}])(' + combination_match({'{0}':3, '{1}':1, '{2}':1}) + ')(?=(?:$|[^{0}{2}]))'
+YONYON_RYOTO = '(?:^|[^{0}]){0}{1}(' + combination_match({'{0}':2, '{2}':1}) + '){1}{0}(?=(?:$|[^{0}]))'
 YONYON_TYODA = '(?:^|[^{0}]){0}{{2}}{1}({0}{2}|{2}{0}){1}{0}{{2}}(?=(?:$|[^{0}]))'
 YONYON_SORYU = '(?:^|[^{0}]){0}{{3}}{1}{2}{1}{0}{{3}}(?=(?:$|[^{0}]))'
-SAN = '(?:^|[^{0}{2}]){1}' \
-  '([{0}{2}]{{3}}{1}|[{0}{2}]{{2}}{1}[{0}{2}]|[{0}{2}]{1}[{0}{2}]{{2}}|{1}[{0}{2}]{{3}})' \
-  '(?={1}(?:$|[^{0}{2}]))'
+SAN = '(?:^|[^{0}{2}]){1}(' + combination_match({'{0}':2, '{1}':1, '{2}':1}) + ')(?={1}(?:$|[^{0}{2}]))'
 
 def compile_go_ren(player_color: PlayerColor, player_latest: PlayerLatest) -> Dict:
   return GO_REN.format(player_color.value, player_latest.value)

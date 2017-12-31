@@ -106,15 +106,16 @@ class RenjuEnv(gym.Env):
     board = self._state.get_board()
     pattern = rule.judge_game(self._container.get_rule_matcher_factory(), board.get_board_state(),
       self._board_size, player_color, action)
-    print(pattern)
     result = utils.pattern_to_result(pattern)
     reward = self._container.get_reward_factory().generate().get_reward(
       self._state.get_player_color(), result)
     if utils.finish(result):
+      print("Game end on {0}'s tern with {1}: last move: {2}".format(
+        player_color, pattern, action))
       return board, reward, True, {'state': board}
     else:
       self._step_auto()
-      return board, reward, False, {'state': board}
+      return self._state.get_board(), reward, False, {'state': self._state.get_board()}
 
   def get_state(self) -> RenjuState:
     return self._state

@@ -30,7 +30,6 @@ class MatcherCount(MatcherCallable):
       if re.search(regix, ''.join(map(str, line))):
         count += 1
         if count >= self._min_count:
-          print(regix)
           return True
     return False
 
