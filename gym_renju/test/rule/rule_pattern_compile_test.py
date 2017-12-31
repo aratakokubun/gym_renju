@@ -9,8 +9,6 @@ Test module for rule pattern compiler.
 # Imports
 import unittest as ut
 import re
-from functools import reduce
-import itertools as it
 from parameterized import parameterized
 
 from gym_renju.envs.core.domain.player import PlayerColor, PlayerLatest
