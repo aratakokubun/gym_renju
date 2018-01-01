@@ -38,7 +38,7 @@ import time
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import gym_renju
-env = gym.make('Renju19x19-v0') # default 'beginner' level opponent policy
+env = gym.make('Renju15x15-v0') # default 'beginner' level opponent policy
 
 env.reset()
 env.render()

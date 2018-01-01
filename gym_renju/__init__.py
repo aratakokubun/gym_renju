@@ -2,7 +2,7 @@ from gym.envs.registration import register
 
 # Environment for human vs ai with basic level
 register(
-    id='Renju19x19-v0',
+    id='Renju15x15-v0',
     entry_point='gym_renju.envs:RenjuEnv',
     kwargs={
         'players': ['input', 'random'],
@@ -15,7 +15,7 @@ register(
 # Environment for machine learning.
 # Can act both black and white
 register(
-    id='Renju19x19-learning-v0',
+    id='Renju15x15-learning-v0',
     entry_point='gym_renju.envs:RenjuEnv',
     kwargs={
         'players': ['input', 'input'],
@@ -26,7 +26,7 @@ register(
 )
 
 register(
-    id='Renju19x19-learning-noswap-v0',
+    id='Renju15x15-learning-noswap-v0',
     entry_point='gym_renju.envs:RenjuEnv',
     kwargs={
         'players': ['input', 'input'],
