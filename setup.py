@@ -14,7 +14,6 @@ setup(
     author="kkbnart",
     packages=find_packages(),
     keywords='gym renju reinforcement learning',
-    install_requires=[],
     long_description=long_description,
     classifiers=[
         "Programming Language :: Python",
