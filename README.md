@@ -30,7 +30,7 @@ pip install gym-renju
 ## Quick Example
 See src in [sample.py](https://github.com/aratakokubun/gym_renju/blob/master/sample/sample.py)
 
-'''sample.py
+```python
 # Imports
 import gym
 import time
@@ -52,7 +52,7 @@ for _ in range(225):
     if done:
         print ("Game is Over")
         break
-'''
+```
 
 ## Test
 
