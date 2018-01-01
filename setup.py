@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="gym-renju",
-    version="0.1.2",
+    version="0.1.3",
     description="Renju Game Gym Environment",
     license="MIT",
     author="kkbnart",
@@ -20,4 +20,6 @@ setup(
         "Programming Language :: Python :: 3.5",
     ],
     install_requires=['gym', 'pytest', 'parameterized', 'injector'],
+    package_dir={'gym_renju': 'gym_renju'},
+    package_data={'gym_renju': ['data/*.json']},
 )
