@@ -19,7 +19,8 @@ Also, I have to note that some of the detail rules is not implemented. Please re
 ### Test Dependencies
 
 * pytest (https://github.com/pytest-dev/pytest)
-* parameterized
+* parameterized (https://github.com/wolever/parameterized)
+* injector (https://github.com/alecthomas/injector)
 
 ## Installation
 
