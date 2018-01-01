@@ -11,12 +11,14 @@ setup(
     version="0.1.0",
     description="Renju Game Gym Environment",
     license="MIT",
-    author="aratakokubun",
+    author="kkbnart",
     packages=find_packages(),
+    keywords='gym renju reinforcement learning',
     install_requires=[],
     long_description=long_description,
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.5",
-    ]
+    ],
+    install_requires=['gym', 'pytest', 'parameterized'],
 )
