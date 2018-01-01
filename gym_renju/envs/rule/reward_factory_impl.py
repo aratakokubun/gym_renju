@@ -7,10 +7,14 @@ Implemented factory module for reward.
 '''
 
 # Imports
+import os
+
 from gym_renju.envs.core.contract.reward import Reward
 from gym_renju.envs.core.contract.factory import RewardFactory
 from gym_renju.envs.rule.renju_reward import ConfiguredReward
 
 class RewardFactoryImpl(RewardFactory):
   def generate(self) -> Reward:
-    return ConfiguredReward('gym_renju/data/reward.json')
+    my_path = os.path.abspath(os.path.dirname(__file__))
+    path = os.path.join(my_path, "../../data/reward.json")
+    return ConfiguredReward(path)
