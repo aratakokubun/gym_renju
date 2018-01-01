@@ -8,6 +8,7 @@ Sample script for gym renju.
 
 # Imports
 import gym
+import time
 # Change import on installed on pip
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
@@ -25,6 +26,7 @@ for _ in range(225):
     observation, reward, done, info = env.step(action)
     print(reward)
     env.render()
+    time.sleep(0.05)
     if done:
         print ("Game is Over")
         break

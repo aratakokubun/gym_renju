@@ -17,6 +17,8 @@ from gym.utils import seeding
 from six import StringIO
 
 from gym_renju.envs.core.domain.player import PlayerColor
+from gym_renju.envs.core.domain.rule_pattern import RulePattern
+from gym_renju.envs.core.domain.result import Result
 from gym_renju.envs.renju import RenjuState, RenjuBoard
 from gym_renju.envs.rule import rule
 from gym_renju.envs.utils import utils
@@ -87,6 +89,16 @@ class RenjuEnv(gym.Env):
     outfile.write(repr(self._state) + '\n')
     return outfile
 
+  def _print_result(self, player_color: PlayerColor, pattern: RulePattern, result: Result, action: int):
+      print("Game end on {0}'s tern with {1}: last move: {2}".format(player_color, pattern, action))
+      if result is Result.WIN:
+        print("Player {0} Wins!".format(player_color.name))
+      elif result is Result.LOSE:
+        opponent = utils.next_player(player_color)
+        print("Player {0} Wins!".format(opponent.name))
+      else:
+        print("Draw game!")
+
   def _step(self, action: int) -> Tuple:
     '''
         Returns:
@@ -110,8 +122,7 @@ class RenjuEnv(gym.Env):
     reward = self._container.get_reward_factory().generate().get_reward(
       self._state.get_player_color(), result)
     if utils.finish(result):
-      print("Game end on {0}'s tern with {1}: last move: {2}".format(
-        player_color, pattern, action))
+      self._print_result(player_color, pattern, result, action)
       return board, reward, True, {'state': board}
     else:
       self._step_auto()
