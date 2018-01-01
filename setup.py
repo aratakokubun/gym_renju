@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="gym-renju",
-    version="0.1.1",
+    version="0.1.2",
     description="Renju Game Gym Environment",
     license="MIT",
     author="kkbnart",
