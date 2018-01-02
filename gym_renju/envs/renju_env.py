@@ -57,7 +57,7 @@ class RenjuEnv(gym.Env):
     self._actions = []
     self._step_auto()
 
-  def _step_auto(self):
+  def _step_auto(self) -> None:
     next_player = self._state.get_player_color()
     policy = self._policies.get(next_player)
     if policy.auto_act():
@@ -66,7 +66,7 @@ class RenjuEnv(gym.Env):
       action = policy.act(self._state.get_board().get_board_state(), self.action_space, next_player)
       self._step(action)
 
-  def _reset(self) -> None:
+  def _reset(self) -> List:
     if self._swap_first:
       self._policies[PlayerColor.BLACK], self._policies[PlayerColor.WHITE] = \
         self._policies[PlayerColor.WHITE], self._policies[PlayerColor.BLACK]
@@ -75,6 +75,7 @@ class RenjuEnv(gym.Env):
     self._actions = []
     self.action_space = self._container.get_space_factory().generate(self._board_size**2)
     self._step_auto()
+    return self._state.get_board()
 
   def _seed(self, seed=None) -> List:
       seed1 = seeding.np_random(seed)
