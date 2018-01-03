@@ -75,7 +75,7 @@ class RenjuEnv(gym.Env):
     self._actions = []
     self.action_space = self._container.get_space_factory().generate(self._board_size**2)
     self._step_auto()
-    return self._state.get_board().get_board_state()
+    return self._state.get_board().to_np_arr()
 
   def _seed(self, seed=None) -> List:
       seed1 = seeding.np_random(seed)
@@ -124,10 +124,10 @@ class RenjuEnv(gym.Env):
       self._state.get_player_color(), result)
     if utils.finish(result):
       self._print_result(player_color, pattern, result, action)
-      return board.get_board_state(), reward, True, {'state': board}
+      return board.to_np_arr(), reward, True, {'state': board}
     else:
       self._step_auto()
-      return self._state.get_board().get_board_state(), reward, False, {'state': self._state.get_board().get_board_state()}
+      return self._state.get_board().to_np_arr(), reward, False, {'state': self._state}
 
   def get_state(self) -> RenjuState:
     return self._state
