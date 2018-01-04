@@ -16,3 +16,9 @@ class Reward(object):
     Get reward for the specified result
     '''
     raise NotImplementedError
+
+  def get_opponent_reward(self, opponent: PlayerColor, result: Result) -> float:
+    '''
+    Get reward for the specified result of the opponent player
+    '''
+    raise NotImplementedError

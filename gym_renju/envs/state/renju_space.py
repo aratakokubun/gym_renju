@@ -36,3 +36,8 @@ class RenjuSpace(DiscreteSpace):
       self.valid_spaces.remove(action)
     else:
       print("space %d is not in valid spaces" % action)
+
+  def __eq__(self, other):
+    if isinstance(self, other.__class__):
+        return self.valid_spaces == other.valid_spaces
+    return False

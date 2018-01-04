@@ -18,7 +18,7 @@ class AiPolicy(PlayerPolicy):
   Policy for AI player
   '''
   def auto_act(self) -> bool:
-    return False
+    return True
 
 class RandomPolicy(AiPolicy):
   '''

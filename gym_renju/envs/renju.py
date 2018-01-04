@@ -90,27 +90,44 @@ class RenjuBoard(object):
     out += (label_boundry + label_letters)
     return out
 
+  def __eq__(self, other):
+    if isinstance(self, other.__class__):
+        return self._board_size == other._board_size and self._board_state == other._board_state and \
+          self._move_count == other._move_count and self._last_action == other._last_action
+    return False
+
 class RenjuState(object):
   '''
   Renju State class to preserve a current player and a board.
   '''
-  def __init__(self, board: RenjuBoard, player_color: PlayerColor) -> None:
-    assert player_color in utils.valid_player_colors()
+  def __init__(self, board: RenjuBoard, latest_player: PlayerColor, next_player: PlayerColor) -> None:
+    assert next_player in utils.valid_player_colors()
     self._board = board
-    self._player_color = player_color
+    self._latest_player = latest_player
+    self._next_player = next_player
 
   def act(self, action: int):
-    return RenjuState(self._board.act(action, self._player_color),
-      utils.next_player(self._player_color))
+    return RenjuState(self._board.act(action, self._next_player),
+      self._next_player, utils.next_player(self._next_player))
 
   def get_board(self) -> RenjuBoard:
     return self._board
 
-  def get_player_color(self) -> PlayerColor:
-    return self._player_color
+  def get_latest_player(self) -> PlayerColor:
+    return self._latest_player
+
+  def get_next_player(self) -> PlayerColor:
+    return self._next_player
 
   def __repr__(self):
     '''
     Output board state
     '''
-    return 'To play: {}\n{}'.format(six.u(self._player_color), self._board.__repr__())
+    return 'To play: {}\n{}'.format(six.u(self._next_player), self._board.__repr__())
+
+  def __eq__(self, other):
+    if isinstance(self, other.__class__):
+        return self._board == other._board and \
+          self._latest_player == other._latest_player and \
+          self._next_player == other._next_player
+    return False

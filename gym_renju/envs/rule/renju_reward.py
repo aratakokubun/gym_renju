@@ -38,3 +38,15 @@ class ConfiguredReward(Reward):
 
   def get_reward(self, player: PlayerColor, result: Result) -> float:
     return self._reward_map[player][result]
+
+  def get_opponent_reward(self, opponent: PlayerColor, result: Result) -> float:
+    opponent_result = self._opponent_result(result)
+    return self._reward_map[opponent][opponent_result]
+
+  def _opponent_result(self, result: Result) -> Result:
+    if result is Result.WIN:
+      return Result.LOSE
+    elif result is Result.LOSE:
+      return Result.WIN
+    else:
+      return result

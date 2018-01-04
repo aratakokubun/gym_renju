@@ -23,25 +23,25 @@ from gym_renju.envs.renju import RenjuState, RenjuBoard
 from gym_renju.envs.rule import rule
 from gym_renju.envs.utils import utils
 from gym_renju.envs import renju_container
+from gym_renju.envs.renju_container import RenjuContainer
 
 class RenjuEnv(gym.Env):
   metadata = {"render.modes": ["human", "ansi"]}
+  default_container = renju_container.compile_container()
 
-  def __init__(self, players: List, board_size: int = 9, swap_first: bool = False) -> None:
+  def __init__(self, players: List, board_size: int = 9, swap_first: bool = False,
+    container: RenjuContainer = default_container) -> None:
     '''
     @param players: List of player types
     @param board_size: board size
     '''
-    # Compile DI container
-    self._container = renju_container.compile_container()
-
+    self._container = container
     policy_factory = self._container.get_policy_factory()
     self._policies = {
       PlayerColor.BLACK: policy_factory.generate(players[0]),
       PlayerColor.WHITE: policy_factory.generate(players[1])
     }
     self._board_size = board_size
-    self._board = RenjuBoard(board_size)
     self._swap_first = swap_first
 
     # Set env attributes
@@ -52,13 +52,14 @@ class RenjuEnv(gym.Env):
     # self.reward_range = (-100, 100)
 
     # Set attributes to keep states
-    self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.BLACK)
+    self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.WHITE, PlayerColor.BLACK)
     self._states = [self._state]
     self._actions = []
+    self._latest_rule_pattern = RulePattern.NONE
     self._step_auto()
 
   def _step_auto(self) -> None:
-    next_player = self._state.get_player_color()
+    next_player = self._state.get_next_player()
     policy = self._policies.get(next_player)
     if policy.auto_act():
       # Calling _step recursively but not calling it more than 2 times.
@@ -70,9 +71,10 @@ class RenjuEnv(gym.Env):
     if self._swap_first:
       self._policies[PlayerColor.BLACK], self._policies[PlayerColor.WHITE] = \
         self._policies[PlayerColor.WHITE], self._policies[PlayerColor.BLACK]
-    self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.BLACK)
+    self._state = RenjuState(RenjuBoard(self._board_size), PlayerColor.WHITE, PlayerColor.BLACK)
     self._states = [self._state]
     self._actions = []
+    self._latest_rule_pattern = RulePattern.NONE
     self.action_space = self._container.get_space_factory().generate(self._board_size**2)
     self._step_auto()
     return self._state.get_board().to_np_arr()
@@ -87,18 +89,25 @@ class RenjuEnv(gym.Env):
     if close:
       return
     outfile = StringIO() if mode == 'ansi' else sys.stdout
+    latest_result = utils.pattern_to_result(self._latest_rule_pattern)
+    if utils.finish(latest_result):
+      outfile.write(self._repr_result(latest_result) + '\n')
     outfile.write(repr(self._state) + '\n')
     return outfile
 
-  def _print_result(self, player_color: PlayerColor, pattern: RulePattern, result: Result, action: int):
-      print("Game end on {0}'s tern with {1}: last move: {2}".format(player_color, pattern, action))
-      if result is Result.WIN:
-        print("Player {0} Wins!".format(player_color.name))
-      elif result is Result.LOSE:
-        opponent = utils.next_player(player_color)
-        print("Player {0} Wins!".format(opponent.name))
-      else:
-        print("Draw game!")
+  def _repr_result(self, result: Result) -> str:
+    latest_player = self._state.get_latest_player()
+    latest_action = self._state.get_board().get_last_action()
+    out = 'Game end on {0}\'s tern with {1}: last move: {2}\n'\
+      .format(latest_player.name, self._latest_rule_pattern.name, latest_action)
+    if result is Result.WIN:
+      out += 'Player {0} Wins!'.format(latest_player.name)
+    elif result is Result.LOSE:
+      opponent = self._state.get_next_player()
+      out += 'Player {0} Wins!'.format(opponent.name)
+    else:
+      out += 'Draw game!'
+    return out
 
   def _step(self, action: int) -> Tuple:
     '''
@@ -110,27 +119,47 @@ class RenjuEnv(gym.Env):
     '''
     if not self.action_space.contains(action):
       raise error.Error('Action[{}] is not in space'.format(action))
+    
+    if utils.finish(utils.pattern_to_result(self._latest_rule_pattern)):
+      raise error.Error('Game already finished. Get rewards with "get_rewards_afeter_game" and then "reset" the env.')
 
-    player_color = self._state.get_player_color()
+    next_player = self._state.get_next_player()
     self._state = self._state.act(action)
     self._actions.append(self._state.get_board().get_last_action())
     self.action_space.remove(action) # remove current action from action_space
 
     board = self._state.get_board()
-    pattern = rule.judge_game(self._container.get_rule_matcher_factory(), board.get_board_state(),
-      self._board_size, player_color, action)
-    result = utils.pattern_to_result(pattern)
-    reward = self._container.get_reward_factory().generate().get_reward(
-      self._state.get_player_color(), result)
+    self._latest_rule_pattern = rule.judge_game(self._container.get_rule_matcher_factory(), board.get_board_state(),
+      self._board_size, next_player, action)
+    result = utils.pattern_to_result(self._latest_rule_pattern)
     if utils.finish(result):
-      self._print_result(player_color, pattern, result, action)
+      reward = self._container.get_reward_factory().generate().get_reward(next_player, result)
       return board.to_np_arr(), reward, True, {'state': board}
     else:
       self._step_auto()
-      return self._state.get_board().to_np_arr(), reward, False, {'state': self._state}
+      result = utils.pattern_to_result(self._latest_rule_pattern)
+      reward = self._container.get_reward_factory().generate().get_opponent_reward(next_player, result)
+      return self._state.get_board().to_np_arr(), reward, utils.finish(result), {'state': self._state}
 
   def get_state(self) -> RenjuState:
     return self._state
 
   def get_actions(self) -> List[int]:
     return self._actions
+
+  def get_rewards(self) -> List[float]:
+    '''
+    Get rewards of both players.
+    @return List of rewards, with [0]:<BLACK:Reward of player first> [1]:<WHITE:Reward of draw first>
+    '''
+    result = utils.pattern_to_result(self._latest_rule_pattern)
+    last_player = self._state.get_latest_player()
+    next_player = self._state.get_next_player()
+    last_player_reward = self._container.get_reward_factory().generate().get_reward(
+      last_player, result)
+    next_player_reward = self._container.get_reward_factory().generate().get_opponent_reward(
+      next_player, result)
+    if last_player is PlayerColor.BLACK:
+      return [last_player_reward, next_player_reward]
+    else:
+      return [next_player_reward, last_player_reward]
