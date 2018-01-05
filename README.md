@@ -1,26 +1,29 @@
 # Gym Renju
 
 Gym-renju is an Renju game simulating environment for Open AI Gym.
-The game  is played mainly 15x15 sized board, and 2 players (Black and White) put a stone on the board alternatively.<br>
+The game  is played mainly 15x15 sized board, and 2 players (Black and White) put a stone on the board alternatively.
+
 The player will win the game when he/she make a 5 not breaking stones horizontally, vertically, or diagonally.
-The detail rule is a little bit complexed, so please refer to the link below if you want to know it.<br>
-https://en.wikipedia.org/wiki/Renju <br>
+The detail rule is a little bit complexed, so please refer to the link below if you want to know it.
+
+<https://en.wikipedia.org/wiki/Renju>
 
 [![Play Demo](demo/demo1.gif)](https://github.com/aratakokubun/cursor-hijack/)
 
-Also, I have to note that some of the detail rules is not implemented. Please refer to ## To be implemented to know it.
+Also, I have to note that some of the detail rules is not implemented. Please refer to [To be implemented] to know it.
 
 ## Dependencies
 
 ### Product Dependencies
 
-* gym (https://github.com/openai/gym)
+* gym (<https://github.com/openai/gym>)
+* Chainer (<https://chainer.org/>)
 
 ### Test Dependencies
 
-* pytest (https://github.com/pytest-dev/pytest)
-* parameterized (https://github.com/wolever/parameterized)
-* injector (https://github.com/alecthomas/injector)
+* pytest (<https://github.com/pytest-dev/pytest>)
+* parameterized (<https://github.com/wolever/parameterized>)
+* injector (<https://github.com/alecthomas/injector>)
 
 ## Installation
 
@@ -28,8 +31,17 @@ Also, I have to note that some of the detail rules is not implemented. Please re
 pip install gym-renju
 ```
 
+## Learning Example
+
+To implement machine learning code, please refer to the sample implementation below.
+This code is an implementation of AI with DQN on Chainer.
+<https://github.com/aratakokubun/renju-dqn>
+
 ## Quick Example
+
 See src in [sample.py](https://github.com/aratakokubun/gym_renju/blob/master/sample/sample.py)
+
+You can test environment with the code below.
 
 ```python
 # Imports
