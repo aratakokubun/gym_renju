@@ -12,6 +12,17 @@ register(
     nondeterministic=True,
 )
 
+register(
+    id='Renju15x15-noswap-v0',
+    entry_point='gym_renju.envs:RenjuEnv',
+    kwargs={
+        'players': ['input', 'random'],
+        'board_size': 15,
+        'swap_first': False,
+    },
+    nondeterministic=True,
+)
+
 # Environment for machine learning.
 # Can act both black and white
 register(

@@ -24,7 +24,6 @@ env.reset()
 for _ in range(225):
     action = env.action_space.sample() # sample without replacement
     observation, reward, done, info = env.step(action)
-    print(reward)
     env.render()
     time.sleep(0.05)
     if done:
